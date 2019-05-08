@@ -2,7 +2,7 @@ import React from "react";
 
 const Logout = props => (
 	<form onSubmit = {props.logOut}>		
-		<button id="log-btn">Logout</button>
+		<button className="navbtn1">Logout</button>
 	</form>
 	
 

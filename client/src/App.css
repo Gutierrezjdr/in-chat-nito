@@ -5,6 +5,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  color: white; 
 }
 
 .container{
@@ -121,6 +122,20 @@ button:active {
    display: inline-block;
 }
 
+.navbtn1 {
+   position:absolute;
+   top:0;
+   right:0;
+   font-size: 18px; 
+   position: absolute; 
+   float: right; 
+   background: transparent;
+   border: none;
+   color: #FFF9EC;
+   justify-content: right;
+   display: inline-block;
+}
+
 
 .list {
   position: fixed;
@@ -173,13 +188,7 @@ p {
 .course-title {
   margin: auto;
   width: 50%;
-  background-color: #4B314B;
-  padding-top: 15vh;
-  padding-bottom: 70px; 
   width: 60%;
-  padding-right: 100px;
-  padding-left: 110px;
-
 }
 
 .course-title h2 {
@@ -197,9 +206,7 @@ p {
 .courses_sec {
   margin: auto;
   width: 50%;
-  background-color: #4B314B;
   padding-top: 30vh;
-  
   padding: 10px 20px;
 }
 
@@ -218,8 +225,6 @@ p {
   box-shadow: 0px 13px 40px -13px rgba(12, 12, 12, 0.975);
   width: 100%;
   text-decoration: none;
-  
-
 }
 
 
