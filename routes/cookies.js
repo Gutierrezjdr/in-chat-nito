@@ -21,16 +21,25 @@ router.get('/', function(req, res, next) {
 	
 });
 
+router.post('/', function(req, res, next) {
+	console.log("This is the body ");
+	console.log(req.body.input);
+	console.log(req.body.value);
+
+	//var input=req.params.name;
+	res.cookie(req.body.input,req.body.value);
+	
+	res.status(200).send("ALL Good");//.send(req.params);
+});
+
 router.post('/:name', function(req, res, next) {
 	console.log("This is the body ");
-	console.log(req.params.name);
+	
 	var input=req.params.name;
 	res.cookie('page',input);
 	
 	res.status(200).send("ALL Good");//.send(req.params);
 });
-
-
 
 
 module.exports=router;

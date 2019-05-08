@@ -15,6 +15,8 @@ router.post('/', function(req, res, next) {
 		
 			res.clearCookie('userID');
 			res.clearCookie('username');
+			res.clearCookie('page');
+			res.clearCookie('courses');
 			
 			res.status(200).send("Cookie cleared");
 			//throw new Error('Cookie not cleared');

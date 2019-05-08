@@ -34,18 +34,19 @@ class App extends React.Component {
 
   componentWillMount()
   {
-   /* fetch('/cookies', {
+    fetch('/cookies', {
       method:'GET'
       })
       .then(res => res.json())
       .then(res => {
         console.log("Got cookies page " + res.page);
+        
        // var page =res.page;
         this.setState({
           page:res.page,
-          name: res.getUsername
+          name: res.username
         });
-      }) */
+      }) 
 
   }
   componentDidMount(){
@@ -59,11 +60,28 @@ class App extends React.Component {
       .then(res => {
         console.log("Got cookies page " + res.page);
        // var page =res.page;
-        this.setState({
-          page: res.page,
-          name: res.getUsername
-        });
-
+       if(res.page==='courses')
+       {
+        if(res.courses!= undefined)
+        { console.log(res.courses);}
+          this.setState({
+            page: res.page,
+            activeChat:false,
+            name: res.username,
+            courses: res.courses
+            
+          });
+          console.log(this.state);
+       } else if(res.page==='login')
+       {
+          this.setState({
+            page: res.page,
+            activeChat:false,
+            name: undefined,
+            
+          });
+          console.log(this.state);
+       }
        
       })
       
@@ -84,10 +102,15 @@ class App extends React.Component {
         socket.emit('join', name);
     }
     //SETS PAGE TO COURSES
-    fetch(`/cookies/courses`,{
+    fetch(`/cookies`,{
       method: 'POST',
-      header: 'courses'
-    }).then(res =>  console.log("Courses set as page"))
+     // header: 'courses'
+      body: JSON.stringify({
+        input: 'page',
+        value: 'courses'
+      }),
+      headers: {"Content-Type": "application/json"}
+    }).then(res =>  console.log("Page set to Courses."))
 }
 
   handleMessageSubmit(message) {
@@ -115,10 +138,20 @@ class App extends React.Component {
     )
       
     
-    fetch(`/cookies/chat`,{
+    fetch(`/cookies`,{
+      method: 'POST',
+     // header: 'courses'
+      body: JSON.stringify({
+        input: 'page',
+        value: 'chat'
+      }),
+      headers: {"Content-Type": "application/json"}
+    }).then(res =>  console.log("Chat set as page."))
+    
+    /*fetch(`/cookies/chat`,{
       method: 'POST',
       header: 'chat'
-    }).then(res =>  console.log("Chat set as page."))
+    }).then(res =>  console.log("Chat set as page.")) */
 
    // console.log("Loading messages...."); 
 }
@@ -159,8 +192,22 @@ class App extends React.Component {
           method:'POST'
         })
         .then(res => res.json())
-        .then(courses => this.setState({ courses }))
-        .then(test => console.log(this.state.courses))
+        .then(courses => {
+          this.setState({ courses });
+
+            fetch(`/cookies`,{
+              method: 'POST',
+            // header: 'courses'
+              body: JSON.stringify({
+                input: 'courses',
+                value: courses
+              }),
+              headers: {"Content-Type": "application/json"}
+            }).then(res =>  console.log("Page set to Courses."))
+
+        })
+        .then(test => console.log(this.state.courses)) 
+       
       }
     })
   }
@@ -211,9 +258,15 @@ createUsername = async(u) => {
     })
 
     //SETS PAGE TO COURSES
-    fetch(`/cookies/courses`,{
+
+    fetch(`/cookies`,{
       method: 'POST',
-      header: 'courses'
+     // header: 'courses'
+      body: JSON.stringify({
+        input: 'page',
+        value: 'courses'
+      }),
+      headers: {"Content-Type": "application/json"}
     }).then(res =>  console.log(res))
 
   }
@@ -242,10 +295,21 @@ logOut = (e) => {
   })
 
   //sets page info
-  fetch(`/cookies/login`,{
+
+  /*fetch(`/cookies/login`,{
     method: 'POST',
     header: 'courses'
-  }).then(res =>  console.log("Login set as page"))
+  }).then(res =>  console.log("Login set as page"))*/
+
+  fetch(`/cookies`,{
+    method: 'POST',
+   // header: 'courses'
+    body: JSON.stringify({
+      input: 'page',
+      value: 'login'
+    }),
+    headers: {"Content-Type": "application/json"}
+  }).then(res =>  console.log("Page set as login"))
 
 }
 
@@ -257,10 +321,16 @@ backToCourses = (e) => {
     });
   
   //SETS PAGE TO COURSES
-    fetch(`/cookies/courses`,{
-      method: 'POST',
-      header: 'courses'
-    }).then(res =>  console.log("Courses set as page"))
+  fetch(`/cookies`,{
+    method: 'POST',
+   // header: 'courses'
+    body: JSON.stringify({
+      input: 'page',
+      value: 'courses'
+    }),
+    headers: {"Content-Type": "application/json"}
+  }).then(res =>  console.log("Page set as courses."))
+    
 
 }
 
@@ -350,11 +420,11 @@ renderCoursePage() {
 }
 
 render(){
-  if(this.state.name === undefined && this.state.activeChat === false)//this.state.page!== 'chat')//this.state.activeChat === false||this.state.page==='login')
+  if(this.state.name === undefined && this.state.activeChat === false)//||this.state.page==='login')
     return this.renderHomePage()
-  else if(this.state.name !== undefined && this.state.activeChat === false)//this.state.page==='courses')//this.state.activeChat === false||this.state.page ==='courses')
+  else if(this.state.name !== undefined && this.state.activeChat === false)//|this.state.page ==='courses')
     return this.renderCoursePage()
-  else 
+  else if(this.state.page=='chat')
     return this.renderChat()
 }
 
