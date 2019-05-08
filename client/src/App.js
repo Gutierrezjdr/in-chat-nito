@@ -32,7 +32,7 @@ class App extends React.Component {
     this.onDisconnectStatus = '';
   }
 
-  componentWillMount()
+/*  componentWillMount()
   {
     fetch('/cookies', {
       method:'GET'
@@ -48,7 +48,7 @@ class App extends React.Component {
         });
       }) 
 
-  }
+  } */
   componentDidMount(){
     socket.on('message', message => this.messageReceive(message));
     socket.on('update', ({users}) => this.chatUpdate(users));
@@ -58,38 +58,61 @@ class App extends React.Component {
       })
       .then(res => res.json())
       .then(res => {
-        console.log("Got cookies page " + res.page);
-       // var page =res.page;
-       if(res.page==='courses')
-       {
-        if(res.courses!= undefined)
-        { console.log(res.courses);}
-          this.setState({
-            page: res.page,
-            activeChat:false,
-            name: res.username,
-            courses: res.courses
-            
-          });
-          console.log(this.state);
-       } else if(res.page==='login')
-       {
-          this.setState({
-            page: res.page,
-            activeChat:false,
-            name: undefined,
-            
-          });
-          console.log(this.state);
-       }
-       
+            console.log("Got cookies page " + res.page);
+          // var page =res.page;
+        console.log(this.state);
+       /// if(res!==undefined){
+          if(res.page==='courses')
+          {
+          
+              this.setState({
+                page: res.page,
+                name: res.username,
+                courses: res.courses,
+                activeChat: false
+                
+              });
+             // console.log(this.state);
+          } else if(res.page==='chat')
+          {
+              this.setState({
+                page: res.page,
+                activeChat:true,
+                name: res.username,
+                room:res.room,
+                courses: res.courses,
+                messages:res.messages
+                
+              });
+              console.log(this.state);
+          } else  {
+            this.setState({
+              activeChat:false,
+              name: undefined 
+            });
+          } 
+        //  console.log(this.state);
+       // }
+
+      
       })
+      //console.log(this.state);
       
   }
 
   messageReceive(message) {
     const messages = [...this.state.messages, message];
     this.setState({messages})
+
+    fetch(`/cookies`,{
+      method: 'POST',
+    // header: 'courses'
+      body: JSON.stringify({
+        input: 'messages',
+        value: messages
+      }),
+      headers: {"Content-Type": "application/json"}
+    }).then(res =>  console.log("Page set to Courses."))
   }
 
   chatUpdate(users) {
@@ -118,6 +141,16 @@ class App extends React.Component {
         const messages = [...this.state.messages, message];
         this.setState({messages});
         socket.emit('message', message);
+
+       /* fetch(`/cookies`,{
+          method: 'POST',
+        // header: 'courses'
+          body: JSON.stringify({
+            input: 'messages',
+            value: messages
+          }),
+          headers: {"Content-Type": "application/json"}
+        }).then(res =>  console.log("Page set to Courses."))*/
     }
   }
 
@@ -135,7 +168,7 @@ class App extends React.Component {
       {
         page:'chat'
       }
-    )
+    );
       
     
     fetch(`/cookies`,{
@@ -144,6 +177,16 @@ class App extends React.Component {
       body: JSON.stringify({
         input: 'page',
         value: 'chat'
+      }),
+      headers: {"Content-Type": "application/json"}
+    }).then(res =>  console.log("Chat set as page."))
+
+    fetch(`/cookies`,{
+      method: 'POST',
+     // header: 'courses'
+      body: JSON.stringify({
+        input: 'room',
+        value: room
       }),
       headers: {"Content-Type": "application/json"}
     }).then(res =>  console.log("Chat set as page."))
@@ -323,14 +366,23 @@ backToCourses = (e) => {
   //SETS PAGE TO COURSES
   fetch(`/cookies`,{
     method: 'POST',
-   // header: 'courses'
     body: JSON.stringify({
       input: 'page',
       value: 'courses'
     }),
     headers: {"Content-Type": "application/json"}
   }).then(res =>  console.log("Page set as courses."))
+
+  fetch(`/cookies`,{
+    method: 'POST',
+    body: JSON.stringify({
+      input: 'activeChat',
+      value: false
+    }),
+    headers: {"Content-Type": "application/json"}
+  }).then(res =>  console.log("Page set as courses."))
     
+
 
 }
 
@@ -410,7 +462,6 @@ renderChat() {
 
 renderCoursePage() {
   return (
-    
     <div className = "wrapper"> 
        <Logout logOut={this.logOut}/>
       <ClassList switchToChat={this.switchToChat} courses={this.state.courses} handleRoomClick={this.handleRoomClick} />
@@ -420,12 +471,14 @@ renderCoursePage() {
 }
 
 render(){
+
   if(this.state.name === undefined && this.state.activeChat === false)//||this.state.page==='login')
     return this.renderHomePage()
   else if(this.state.name !== undefined && this.state.activeChat === false)//|this.state.page ==='courses')
     return this.renderCoursePage()
-  else if(this.state.page=='chat')
+   else 
     return this.renderChat()
+  
 }
 
 }

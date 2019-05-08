@@ -17,6 +17,9 @@ router.post('/', function(req, res, next) {
 			res.clearCookie('username');
 			res.clearCookie('page');
 			res.clearCookie('courses');
+			res.clearCookie('room');
+			res.clearCookie('messages');
+			res.clearCookie('activeChat');
 			
 			res.status(200).send("Cookie cleared");
 			//throw new Error('Cookie not cleared');

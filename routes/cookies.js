@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 		console.log("Error"+err);
 		res.status(404).send("No User logged in");
 	} else{
-
+		console.log(JSON.stringify(req.cookies));
 	res.status(200).send(JSON.stringify(req.cookies));
 	}
 	

@@ -33,6 +33,7 @@ router.post('/:name', function(req, res, next) {
             //Returns userID and username
             res.cookie('userID', (rows[0].userID).toString());
             res.cookie('username',(rows[0].username).toString());
+            res.cookie({maxAge : 9999});
             //console.log(req.cookies);
             res.status(200).send("User Login Succesful");
 
