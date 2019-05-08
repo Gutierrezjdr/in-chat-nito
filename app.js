@@ -118,8 +118,8 @@ io.on('connection', socket => {
     console.log(time);
     
       const {name} = userService.getUserById(socket.id);
-        
-    //Inputs message into db. 
+        console.log("Added message to this room" + room);
+            //Inputs message into db. 
       let input = [ room,message.text,name,time  ];
       db.query( 'INSERT INTO chat_table(chatRoom,message,userName,msgTime) VALUES (?,?,?,?)',input,function(err,rows){
         if(err){
@@ -132,6 +132,7 @@ io.on('connection', socket => {
       }); 
 
       //Broadcasts message to room
+      console.log("The room this will broadcast in " + room);
       socket.to(room).broadcast.emit('message', {
           text: message.text,
           from: name
@@ -148,7 +149,7 @@ io.on('connection', socket => {
   });
 
 
-  let room; // capture the room in our closure
+  var room; // capture the room in our closure
   socket.on('join room', (num) => {
     console.log(num);
     room = `room${num}`;
@@ -160,7 +161,7 @@ io.on('connection', socket => {
         console.log("error: ",err);
       } else{
         console.log("Inside JOIN ROOM")
-        console.log( rows);
+        //console.log( rows);
         
        // table = rows;
        for(var row in rows)

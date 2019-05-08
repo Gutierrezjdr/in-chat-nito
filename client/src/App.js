@@ -63,8 +63,6 @@ class App extends React.Component {
           page: res.page,
           name: res.getUsername
         });
-
-       
       })
       
   }
@@ -94,6 +92,8 @@ class App extends React.Component {
     if (message.text) {
         const messages = [...this.state.messages, message];
         this.setState({messages});
+        var room = `room${this.state.room}`;
+        console.log("THis is the room you are emitting to: "+room);
         socket.emit('message', message);
     }
   }
@@ -104,6 +104,7 @@ class App extends React.Component {
     socket.emit('join room', room);
   
     this.setState({ room });
+  
     console.log(this.state.messages);
     console.log("room " + room + " was clicked");
 
