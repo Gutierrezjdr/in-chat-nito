@@ -32,9 +32,41 @@ class App extends React.Component {
     this.onDisconnectStatus = '';
   }
 
+  componentWillMount()
+  {
+   /* fetch('/cookies', {
+      method:'GET'
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log("Got cookies page " + res.page);
+       // var page =res.page;
+        this.setState({
+          page:res.page,
+          name: res.getUsername
+        });
+      }) */
+
+  }
   componentDidMount(){
     socket.on('message', message => this.messageReceive(message));
     socket.on('update', ({users}) => this.chatUpdate(users));
+
+    fetch('/cookies', {
+      method:'GET'
+      })
+      .then(res => res.json())
+      .then(res => {
+        console.log("Got cookies page " + res.page);
+       // var page =res.page;
+        this.setState({
+          page: res.page,
+          name: res.getUsername
+        });
+
+       
+      })
+      
   }
 
   messageReceive(message) {
@@ -51,6 +83,11 @@ class App extends React.Component {
         this.setState({name});
         socket.emit('join', name);
     }
+    //SETS PAGE TO COURSES
+    fetch(`/cookies/courses`,{
+      method: 'POST',
+      header: 'courses'
+    }).then(res =>  console.log("Courses set as page"))
 }
 
   handleMessageSubmit(message) {
@@ -81,7 +118,7 @@ class App extends React.Component {
     fetch(`/cookies/chat`,{
       method: 'POST',
       header: 'chat'
-    }).then(res =>  console.log("Course set for chat okay"))
+    }).then(res =>  console.log("Chat set as page."))
 
    // console.log("Loading messages...."); 
 }
@@ -173,6 +210,12 @@ createUsername = async(u) => {
       }
     })
 
+    //SETS PAGE TO COURSES
+    fetch(`/cookies/courses`,{
+      method: 'POST',
+      header: 'courses'
+    }).then(res =>  console.log(res))
+
   }
 
 logOut = (e) => {
@@ -202,7 +245,7 @@ logOut = (e) => {
   fetch(`/cookies/login`,{
     method: 'POST',
     header: 'courses'
-  }).then(res =>  console.log(res)) 
+  }).then(res =>  console.log("Login set as page"))
 
 }
 
@@ -213,11 +256,11 @@ backToCourses = (e) => {
         messages:[]
     });
   
-  //SETS COURSES
+  //SETS PAGE TO COURSES
     fetch(`/cookies/courses`,{
       method: 'POST',
       header: 'courses'
-    }).then(res =>  console.log(res))
+    }).then(res =>  console.log("Courses set as page"))
 
 }
 
@@ -305,11 +348,11 @@ renderCoursePage() {
 }
 
 render(){
-  if(this.state.name === undefined && this.state.activeChat === false)
+  if(this.state.name === undefined && this.state.activeChat === false)//this.state.page!== 'chat')//this.state.activeChat === false||this.state.page==='login')
     return this.renderHomePage()
-  else if(this.state.name !== undefined && this.state.activeChat === false)
+  else if(this.state.name !== undefined && this.state.activeChat === false)//this.state.page==='courses')//this.state.activeChat === false||this.state.page ==='courses')
     return this.renderCoursePage()
-  else
+  else 
     return this.renderChat()
 }
 
